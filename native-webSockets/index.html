@@ -1,0 +1,84 @@
+
+<input type='text'/>
+<button>send data</button>
+
+<style>
+
+</style>
+<script>
+    let socket 
+    let interval
+
+    const userName = prompt('ingrese su nombre: ')
+    const randomColor = Math.floor(Math.random()*16777215).toString(16);
+
+    function connect () {
+
+        socket = new WebSocket('ws://192.168.1.10:8000/');
+    
+        const num = Math.random()
+        // Connection opened
+
+        const input = document.querySelector('input')
+        const button = document.querySelector('button')
+
+        socket.addEventListener('open', function (event) {
+            // socket.send('Hello Server');
+            if(interval) clearInterval(interval)
+
+            button.onclick = ()=>{
+
+                if(!input.value) return
+
+                
+                const data = {
+                    message: input.value,
+                    userName: userName,
+                    color: randomColor
+                }
+
+                socket.send(JSON.stringify(data))
+
+                renderMessage(data)
+
+                input.value = ''
+            }
+        });
+    
+        // Listen for messages
+        socket.addEventListener('message', function (event) {
+            // console.log('Message from server ->>', event.data);
+            // document.write(event.data)
+            console.log('receive data ->>', event.data)
+
+            const data = JSON.parse(event.data)
+
+            renderMessage(data)
+    
+        });
+    
+        socket.addEventListener('close',(e)=>{
+            console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+            interval = setInterval(()=>{
+                if(!socket || socket.readyState === 3){
+                    connect()
+                }
+            },1000)
+        }) 
+    }
+
+
+
+
+    function renderMessage (data,type) {
+        const element = document.createElement('div')
+
+        element.textContent = `${data.userName}: ${data.message}`
+        element.style.backgroundColor = data.color
+
+        document.body.appendChild(element)
+    }
+
+
+    connect()
+</script>
