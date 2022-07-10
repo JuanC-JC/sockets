@@ -109,7 +109,7 @@ function joinNs(namespace = '/wiki'){
     })
 
     nsSocket.on('newUserConnectedToRoom',(quantity)=>{
-        console.log(`we are ${quantity} idiots on this room`, nsSocket)
+        console.log(`we are ${quantity} on this room`, nsSocket)
 
         document.querySelector('.curr-room-num-users>span').textContent = `${quantity} Users`
     })

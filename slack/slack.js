@@ -44,8 +44,6 @@ nameSpaces.forEach(nameSpace => {
 
 			const lastRoom = [...nsSocket.rooms][1]
 
-			console.log('dejando este hpta >',lastRoom)
-
 			if(lastRoom){
 			nsSocket.leave(lastRoom)
 				notifyUpdatedQuantityUsersOnRoom(ns,lastRoom)	
